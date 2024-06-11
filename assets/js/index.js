@@ -113,9 +113,8 @@ $(function() {
 
     // create & download
     $("#create-map").show().on('click', async function downloadMap() {
-        const data = await html2canvas(document.querySelector("#map"), { allowTaint: false, useCORS: true })
+        const data = await html2canvas(document.querySelector("#map"), { allowTaint: true, useCORS: true })
         data.toBlob(function(blob) {
-            console.log(blob)
             saveAs(blob, "map.png");
         })
     })
