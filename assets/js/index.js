@@ -81,12 +81,13 @@ $(function() {
             for (let x = 0; x < mapWidthInTiles + 2; x++) {
                 var tileUrl = "https://runeapps.org/s3/map4/live/topdown-0/5/" + (mapX+x) + "-" + (mapY+y) + ".webp" //https://runeapps.org/s3/map4/live/topdown-{mej_plane}/5/{x}-{y}.webp
                 
-                toDataURL(tileUrl, function(tileEncodedAs64) {
-                    var $img = $("<img></img>").attr('src', tileEncodedAs64).width(imgWidth)
+                //toDataURL(tileUrl, function(tileEncodedAs64) {
+                    //var $img = $("<img></img>").attr('src', tileEncodedAs64).width(imgWidth)
+                    var $img = $("<img></img>").attr('src', tileUrl).width(imgWidth)
                     var $imgBorder = $("<div class='map-square-border'></div>").width(imgWidth).height(imgWidth)
                     $mapSquares.append($img)
                     $mapSquaresBorders.append($imgBorder)
-                })
+                //})
             }
         }
 
