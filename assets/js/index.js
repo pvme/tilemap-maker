@@ -104,13 +104,15 @@ $(function() {
         $btn.prop('disabled', (i, v) => !v)
         $btn.children('.toggle').toggleClass('visually-hidden')
 
-        modernScreenshot.domToPng(document.querySelector('#map')).then(dataUrl => {
-            const link = document.createElement('a')
-            link.download = 'map.png'
-            link.href = dataUrl
-            link.click()
-            $btn.prop('disabled', (i, v) => !v)
-            $btn.children('.toggle').toggleClass('visually-hidden')
-        })
+        const data = await html2canvas(document.querySelector("#map"), { allowTaint: true });
+        $("#preview").empty().html(data)
+        // data.toBlob(function(blob) {
+        //     saveAs(blob, "map.png");
+        //     const item = new ClipboardItem({ "image/png": blob })
+        //     navigator.clipboard.write([item])
+        // })
+        $btn.prop('disabled', (i, v) => !v)
+        $btn.children('.toggle').toggleClass('visually-hidden')
+
     })
 })
