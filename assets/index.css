@@ -20,10 +20,16 @@
     height: 610px;
     padding: 15px;
     position: relative;
-    background-image: url('https://img.pvme.io/images/9yWI7Gs35V.png');
-    background-position: bottom;
-    background-repeat: no-repeat;
     overflow: clip;
+    font-size: 0;
+}
+
+.map-background {
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
     font-size: 0;
 }
 
