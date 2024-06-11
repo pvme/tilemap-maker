@@ -70,10 +70,9 @@ $(function() {
             // Build cols
             for (let x = 0; x < mapWidthInTiles + 2; x++) {
                 var tileUrl = "https://runeapps.org/s3/map4/live/topdown-0/5/" + (mapX+x) + "-" + (mapY+y) + ".webp" //https://runeapps.org/s3/map4/live/topdown-{mej_plane}/5/{x}-{y}.webp
-                
-                //Convert map tile to base64
-                toDataUrl(tileUrl, function(data64) {
-                    var $img = $("<img></img>").attr('src', data64).width(imgWidth)
+               
+                toDataURL(tileUrl, function(tileEncodedAs64) {
+                    var $img = $("<img></img>").attr('src', tileEncodedAs64).width(imgWidth)
                     var $imgBorder = $("<div class='map-square-border'></div>").width(imgWidth).height(imgWidth)
                     $mapSquares.append($img)
                     $mapSquaresBorders.append($imgBorder)
@@ -119,16 +118,16 @@ $(function() {
     })
 })
 
-function toDataUrl(url, callback) {
-    var xhr = new XMLHttpRequest()
-    xhr.onload = function() {
-        var reader = new FileReader()
-        reader.onloadend = function() {
-            callback(reader.result)
-        }
-        reader.readAsDataURL(xhr.response)
+function toDataURL(url, callback) {
+  var xhr = new XMLHttpRequest()
+  xhr.onload = function() {
+    var reader = new FileReader()
+    reader.onloadend = function() {
+      callback(reader.result)
     }
-    xhr.open('GET', url)
-    xhr.responseType = 'blob'
-    xhr.send()
+    reader.readAsDataURL(xhr.response)
+  }
+  xhr.open('GET', url)
+  xhr.responseType = 'blob'
+  xhr.send()
 }
