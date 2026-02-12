@@ -318,7 +318,7 @@
 
     <script>
       const TILE_SIZE = 512;
-      const SUB_TILES = 15;
+      const SUB_TILES = 16;
       const MIN_ZOOM = 0.4;
       const MAX_ZOOM = 3;
       const ZOOM_PER_SCROLL = 0.001;
@@ -692,7 +692,7 @@
 
           state.zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, state.zoom));
 
-          const safeStep = 15 / 512; // keeps grid pixel-aligned
+          const safeStep = 16 / 512; // keeps grid pixel-aligned
           state.zoom = Math.round(state.zoom / safeStep) * safeStep;
 
           state.worldX = worldMouseX - mx / (TILE_SIZE * state.zoom);
