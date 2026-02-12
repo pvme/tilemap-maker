@@ -1,316 +1,1062 @@
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PVME Tilemap</title>
 
-<head>
-    <base href="">
-    <script src="./assets/dist/js/color-modes.js"></script>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="PVME Guide Tilemap Maker">
-    <title>PVME Tilemap Maker</title>
-    <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
-    <link href="./assets/index.css" rel="stylesheet">
-    <style>
-        .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <link href="./assets/index.css" rel="stylesheet" />
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      font-family: ui-sans-serif, system-ui;
+      background: #0f172a;
+      color: #e2e8f0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    "
+  >
+    <!-- Sidebar -->
+    <div
+      style="
+        width: 300px;
+        background: #111827;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.05);
+        flex-shrink: 0;
+      "
+    >
+      <!-- Header -->
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          margin-bottom: 10px;
+        "
+      >
+        <!-- Logo -->
+        <div style="display: flex; align-items: center; gap: 10px">
+          <img
+            src="https://img.pvme.io/images/EPzzJe2xy6.gif"
+            alt="PVME"
+            style="
+              height: 36px;
+              width: auto;
+              pointer-events: none;
+              user-select: none;
+            "
+          />
+          <div style="font-weight: 700; font-size: 16px; letter-spacing: 0.5px">
+            PvME Tilemap Maker
+          </div>
+        </div>
+
+        <div style="font-size: 14px; opacity: 0.7; line-height: 1.5">
+          Drag elements onto the map. Scroll to zoom. Click & drag to pan. Click
+          elements to edit or resize. Press "Download PNG" to crop & export.
+        </div>
+
+        <div style="height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
+      </div>
+
+      <!-- Starting Position -->
+      <div
+        style="
+          background: #1e293b;
+          padding: 16px;
+          border-radius: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        "
+      >
+        <h3
+          style="
+            margin: 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.6;
+          "
+        >
+          Starting Position
+        </h3>
+
+        <div style="display: flex; gap: 8px">
+          <input
+            id="xInput"
+            type="number"
+            placeholder="Tile X"
+            style="
+              background: #0f172a;
+              border: 1px solid #334155;
+              border-radius: 8px;
+              padding: 8px;
+              color: white;
+              font-size: 14px;
+              width: 100%;
+            "
+          />
+          <input
+            id="yInput"
+            type="number"
+            placeholder="Tile Y"
+            style="
+              background: #0f172a;
+              border: 1px solid #334155;
+              border-radius: 8px;
+              padding: 8px;
+              color: white;
+              font-size: 14px;
+              width: 100%;
+            "
+          />
+        </div>
+
+        <label
+          style="display: flex; align-items: center; gap: 6px; font-size: 14px"
+        >
+          <input type="checkbox" id="gridToggle" checked />
+          Show Grid
+        </label>
+      </div>
+
+      <!-- Elements -->
+      <div
+        style="
+          background: #1e293b;
+          padding: 16px;
+          border-radius: 12px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        "
+      >
+        <h3
+          style="
+            margin: 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.6;
+          "
+        >
+          Elements (Drag onto map)
+        </h3>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 4px;
+              cursor: grab;
+            "
+          >
+            <div
+              class="palette-item"
+              draggable="true"
+              data-type="player"
+              style="
+                width: 40px;
+                height: 40px;
+                background: #ff4e51;
+                border-radius: 8px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+              "
+            ></div>
+            <span style="font-size: 12px; opacity: 0.8">Player</span>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 4px;
+              cursor: grab;
+            "
+          >
+            <div
+              class="palette-item"
+              draggable="true"
+              data-type="cannon"
+              style="
+                width: 40px;
+                height: 40px;
+                background: #ffe800;
+                border-radius: 8px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+              "
+            ></div>
+            <span style="font-size: 12px; opacity: 0.8">Cannon</span>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 4px;
+              cursor: grab;
+            "
+          >
+            <div
+              class="palette-item"
+              draggable="true"
+              data-type="enemy"
+              style="
+                width: 40px;
+                height: 40px;
+                background: #13e1f2;
+                border-radius: 8px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+              "
+            ></div>
+            <span style="font-size: 12px; opacity: 0.8">Enemy</span>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 4px;
+              cursor: grab;
+            "
+          >
+            <div
+              class="palette-item"
+              draggable="true"
+              data-type="other"
+              style="
+                width: 40px;
+                height: 40px;
+                background: #b94ce6;
+                border-radius: 8px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+              "
+            ></div>
+            <span style="font-size: 12px; opacity: 0.8">Other</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div style="background: #1e293b; padding: 16px; border-radius: 12px">
+        <h3
+          style="
+            margin: 0 0 10px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.6;
+          "
+        >
+          Export
+        </h3>
+        <button
+          id="downloadBtn"
+          style="
+            background: #2563eb;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            width: 100%;
+          "
+        >
+          Download PNG
+        </button>
+      </div>
+
+      <!-- Footer -->
+      <div
+        style="
+          margin-top: auto;
+          padding-top: 16px;
+          font-size: 12px;
+          opacity: 0.6;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div>Built with ❤️ by x222</div>
+
+        <a
+          href="https://github.com/pvme/tilemap-maker"
+          target="_blank"
+          style="color: #38bdf8; text-decoration: none"
+        >
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Map -->
+    <div id="map">
+      <div id="mapInner"></div>
+    </div>
+
+    <script>
+      const TILE_SIZE = 512;
+      const SUB_TILES = 15;
+      const MIN_ZOOM = 0.4;
+      const MAX_ZOOM = 3;
+      const ZOOM_PER_SCROLL = 0.001;
+      const BUFFER = 1;
+      const FRAME_WIDTH = 20;
+
+      const state = {
+        worldX: 177,
+        worldY: 684,
+        zoom: 0.7,
+        showGrid: true,
+        elements: [],
+        selectedIndex: null,
+        dragging: false,
+
+        exportMode: false,
+        cropRect: null,
+        cropDragging: false,
+        cropResizing: false,
+        cropHandle: null,
+        creatingCrop: false,
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("x")) state.worldX = parseFloat(params.get("x"));
+      if (params.has("y")) state.worldY = parseFloat(params.get("y"));
+      if (params.has("z")) state.zoom = parseFloat(params.get("z"));
+      if (params.has("e")) {
+        try {
+          state.elements = JSON.parse(atob(params.get("e")));
+        } catch {}
       }
 
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
+      const map = document.getElementById("map");
+      const inner = document.getElementById("mapInner");
+      const xInput = document.getElementById("xInput");
+      const yInput = document.getElementById("yInput");
+      const gridToggle = document.getElementById("gridToggle");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      const tileCache = new Map();
+
+      const gridLayer = document.createElement("canvas");
+      map.appendChild(gridLayer);
+
+      const toolbar = document.createElement("div");
+      toolbar.className = "element-toolbar";
+      map.appendChild(toolbar);
+
+      function runeUrl(x, y) {
+        return `https://runeapps.org/s3/map4/live/topdown-0/5/${x}-${y}.webp`;
+      }
+
+      function updateTransform() {
+        inner.style.transform = `translate(${-state.worldX * TILE_SIZE * state.zoom}px,
+                     ${-state.worldY * TILE_SIZE * state.zoom}px)
+           scale(${state.zoom})`;
+        xInput.value = state.worldX.toFixed(6);
+        yInput.value = state.worldY.toFixed(6);
+        drawGrid();
+        positionToolbar();
+      }
+
+      function updateURL() {
+        const url = new URL(window.location);
+        url.searchParams.set("x", state.worldX.toFixed(6));
+        url.searchParams.set("y", state.worldY.toFixed(6));
+        url.searchParams.set("z", state.zoom.toFixed(6));
+        url.searchParams.set("e", btoa(JSON.stringify(state.elements)));
+        history.replaceState(null, "", url);
+      }
+
+      function visibleBounds() {
+        const viewW = map.clientWidth / state.zoom;
+        const viewH = map.clientHeight / state.zoom;
+
+        const startX = Math.floor(state.worldX) - BUFFER;
+        const startY = Math.floor(state.worldY) - BUFFER;
+
+        const endX = startX + Math.ceil(viewW / TILE_SIZE) + BUFFER * 2;
+        const endY = startY + Math.ceil(viewH / TILE_SIZE) + BUFFER * 2;
+
+        return { startX, startY, endX, endY };
+      }
+
+      function syncTiles() {
+        const bounds = visibleBounds();
+        const needed = new Set();
+
+        for (let y = bounds.startY; y <= bounds.endY; y++) {
+          for (let x = bounds.startX; x <= bounds.endX; x++) {
+            const key = x + ":" + y;
+            needed.add(key);
+            if (!tileCache.has(key)) {
+              const tile = createTile(x, y);
+              tileCache.set(key, tile);
+              inner.appendChild(tile);
+            }
+          }
+        }
+
+        for (const [key, tile] of tileCache) {
+          if (!needed.has(key)) {
+            tile.remove();
+            tileCache.delete(key);
+          }
         }
       }
 
-      .b-example-divider {
-        width: 100%;
-        height: 3rem;
-        background-color: rgba(0, 0, 0, .1);
-        border: solid rgba(0, 0, 0, .15);
-        border-width: 1px 0;
-        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      function createTile(x, y) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "tile";
+        wrapper.style.left = x * TILE_SIZE + "px";
+        wrapper.style.top = y * TILE_SIZE + "px";
+
+        const img = document.createElement("img");
+        img.src = runeUrl(x, y);
+        img.draggable = false;
+        img.onerror = () => (img.style.display = "none");
+
+        wrapper.appendChild(img);
+        return wrapper;
       }
 
-      .b-example-vr {
-        flex-shrink: 0;
-        width: 1.5rem;
-        height: 100vh;
+      function drawGrid() {
+        if (!state.showGrid) {
+          gridLayer.style.display = "none";
+          return;
+        }
+        gridLayer.style.display = "block";
+
+        const w = map.clientWidth;
+        const h = map.clientHeight;
+        const dpr = window.devicePixelRatio || 1;
+
+        gridLayer.width = w * dpr;
+        gridLayer.height = h * dpr;
+        gridLayer.style.width = w + "px";
+        gridLayer.style.height = h + "px";
+
+        const ctx = gridLayer.getContext("2d");
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+
+        const worldStep = TILE_SIZE / SUB_TILES;
+        const screenStep = Math.round(worldStep * state.zoom);
+
+        const offsetX = Math.round(
+          -((state.worldX * TILE_SIZE) % worldStep) * state.zoom,
+        );
+        const offsetY = Math.round(
+          -((state.worldY * TILE_SIZE) % worldStep) * state.zoom,
+        );
+
+        ctx.strokeStyle = "rgba(0,0,0,0.3)";
+        ctx.lineWidth = 1;
+
+        for (let x = offsetX; x < w; x += screenStep) {
+          ctx.beginPath();
+          ctx.moveTo(Math.round(x) + 0.5, 0);
+          ctx.lineTo(Math.round(x) + 0.5, h);
+          ctx.stroke();
+        }
+
+        for (let y = offsetY; y < h; y += screenStep) {
+          ctx.beginPath();
+          ctx.moveTo(0, Math.round(y) + 0.5);
+          ctx.lineTo(w, Math.round(y) + 0.5);
+          ctx.stroke();
+        }
       }
 
-      .bi {
-        vertical-align: -.125em;
-        fill: currentColor;
+      function clearSelection() {
+        if (state.selectedIndex == null) return;
+        state.selectedIndex = null;
+        renderElements();
+        renderToolbar();
       }
 
-      .nav-scroller {
-        position: relative;
-        z-index: 2;
-        height: 2.75rem;
-        overflow-y: hidden;
+      /* ELEMENTS */
+
+      function snap(worldX, worldY) {
+        return {
+          x: Math.floor(worldX * SUB_TILES),
+          y: Math.floor(worldY * SUB_TILES),
+        };
       }
 
-      .nav-scroller .nav {
-        display: flex;
-        flex-wrap: nowrap;
-        padding-bottom: 1rem;
-        margin-top: -1px;
-        overflow-x: auto;
-        text-align: center;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
+      function renderElements() {
+        document.querySelectorAll(".map-element").forEach((el) => el.remove());
+        const cellSize = TILE_SIZE / SUB_TILES;
+
+        state.elements.forEach((el, i) => {
+          const div = document.createElement("div");
+          div.className = "map-element";
+          if (i === state.selectedIndex) div.classList.add("selected");
+
+          div.style.background =
+            el.type === "player"
+              ? "#ff4e51"
+              : el.type === "cannon"
+                ? "#ffe800"
+                : el.type === "enemy"
+                  ? "#13e1f2"
+                  : "#b94ce6";
+
+          div.style.width = Math.round(el.width * cellSize) + "px";
+          div.style.height = Math.round(el.height * cellSize) + "px";
+          const rawLeft = (el.x * TILE_SIZE) / SUB_TILES;
+          const rawTop = (el.y * TILE_SIZE) / SUB_TILES;
+
+          div.style.left = Math.round(rawLeft) + "px";
+          div.style.top = Math.round(rawTop) + "px";
+
+          div.textContent = el.label || "";
+
+          div.addEventListener("click", (e) => {
+            e.stopPropagation();
+            state.selectedIndex = i;
+            renderElements();
+            renderToolbar();
+          });
+
+          inner.appendChild(div);
+        });
+
+        positionToolbar();
       }
 
-      .btn-bd-primary {
-        --bd-violet-bg: #712cf9;
-        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+      /* Toolbar */
 
-        --bs-btn-font-weight: 600;
-        --bs-btn-color: var(--bs-white);
-        --bs-btn-bg: var(--bd-violet-bg);
-        --bs-btn-border-color: var(--bd-violet-bg);
-        --bs-btn-hover-color: var(--bs-white);
-        --bs-btn-hover-bg: #6528e0;
-        --bs-btn-hover-border-color: #6528e0;
-        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-        --bs-btn-active-color: var(--bs-btn-hover-color);
-        --bs-btn-active-bg: #5a23c8;
-        --bs-btn-active-border-color: #5a23c8;
+      function renderToolbar() {
+        if (state.selectedIndex == null) {
+          toolbar.style.display = "none";
+          return;
+        }
+
+        const el = state.elements[state.selectedIndex];
+
+        toolbar.innerHTML = `
+          W:<input type="number" min="1" max="10" value="${el.width}">
+          H:<input type="number" min="1" max="10" value="${el.height}">
+          <input type="text" placeholder="Label" value="${el.label || ""}">
+          <button>✕</button>
+        `;
+
+        const inputs = toolbar.querySelectorAll("input");
+
+        inputs[0].oninput = (e) => {
+          el.width = Math.max(1, parseInt(e.target.value) || 1);
+          renderElements();
+          updateURL();
+        };
+        inputs[1].oninput = (e) => {
+          el.height = Math.max(1, parseInt(e.target.value) || 1);
+          renderElements();
+          updateURL();
+        };
+        inputs[2].oninput = (e) => {
+          el.label = e.target.value;
+          renderElements();
+          updateURL();
+        };
+
+        toolbar.querySelector("button").onclick = () => {
+          state.elements.splice(state.selectedIndex, 1);
+          state.selectedIndex = null;
+          renderElements();
+          renderToolbar();
+          updateURL();
+        };
+
+        toolbar.style.display = "flex";
+        positionToolbar();
       }
 
-      .bd-mode-toggle {
-        z-index: 1500;
+      function positionToolbar() {
+        if (state.selectedIndex == null) return;
+
+        const el = state.elements[state.selectedIndex];
+        const worldCellX = el.x / SUB_TILES;
+        const worldCellY = el.y / SUB_TILES;
+
+        const px = (worldCellX - state.worldX) * TILE_SIZE * state.zoom;
+        const py = (worldCellY - state.worldY) * TILE_SIZE * state.zoom;
+
+        toolbar.style.left = px + "px";
+        toolbar.style.top = py - 40 + "px";
       }
 
-      .bd-mode-toggle .dropdown-menu .active .bi {
-        display: block !important;
+      /* Sidebar Controls */
+
+      xInput.value = state.worldX;
+      yInput.value = state.worldY;
+
+      xInput.onchange = () => {
+        state.worldX = parseFloat(xInput.value) || 0;
+        updateTransform();
+        syncTiles();
+        updateURL();
+      };
+
+      yInput.onchange = () => {
+        state.worldY = parseFloat(yInput.value) || 0;
+        updateTransform();
+        syncTiles();
+        updateURL();
+      };
+
+      gridToggle.checked = state.showGrid;
+      gridToggle.onchange = () => {
+        state.showGrid = gridToggle.checked;
+        drawGrid();
+      };
+
+      downloadBtn.onclick = () => {
+        html2canvas(map, { backgroundColor: null }).then((canvas) => {
+          const link = document.createElement("a");
+          link.download = "tilemap.png";
+          link.href = canvas.toDataURL();
+          link.click();
+        });
+      };
+
+      /* Pan + Zoom */
+
+      map.addEventListener("pointerdown", (e) => {
+        if (toolbar.contains(e.target)) return;
+        if (state.exportMode) return;
+        if (e.target.classList.contains("map-element")) return;
+        clearSelection();
+
+        state.dragging = true;
+        map.classList.add("dragging");
+        state.startX = e.clientX;
+        state.startY = e.clientY;
+        state.originX = state.worldX;
+        state.originY = state.worldY;
+      });
+
+      window.addEventListener("pointermove", (e) => {
+        if (!state.dragging) return;
+        const dx = (e.clientX - state.startX) / (TILE_SIZE * state.zoom);
+        const dy = (e.clientY - state.startY) / (TILE_SIZE * state.zoom);
+        state.worldX = state.originX - dx;
+        state.worldY = state.originY - dy;
+        updateTransform();
+        syncTiles();
+        updateURL();
+      });
+
+      window.addEventListener("pointerup", () => {
+        state.dragging = false;
+        map.classList.remove("dragging");
+      });
+
+      map.addEventListener(
+        "wheel",
+        (e) => {
+          e.preventDefault();
+          clearSelection();
+
+          const rect = map.getBoundingClientRect();
+          const mx = e.clientX - rect.left;
+          const my = e.clientY - rect.top;
+
+          const worldMouseX = state.worldX + mx / (TILE_SIZE * state.zoom);
+          const worldMouseY = state.worldY + my / (TILE_SIZE * state.zoom);
+
+          state.zoom -= e.deltaY * ZOOM_PER_SCROLL;
+
+          state.zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, state.zoom));
+
+          const safeStep = 15 / 512; // keeps grid pixel-aligned
+          state.zoom = Math.round(state.zoom / safeStep) * safeStep;
+
+          state.worldX = worldMouseX - mx / (TILE_SIZE * state.zoom);
+          state.worldY = worldMouseY - my / (TILE_SIZE * state.zoom);
+
+          updateTransform();
+          syncTiles();
+          updateURL();
+        },
+        { passive: false },
+      );
+
+      document.querySelectorAll(".palette-item").forEach((item) => {
+        item.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("type", item.dataset.type);
+        });
+      });
+
+      map.addEventListener("dragover", (e) => e.preventDefault());
+
+      map.addEventListener("drop", (e) => {
+        e.preventDefault();
+        clearSelection();
+        const type = e.dataTransfer.getData("type");
+        const rect = map.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+
+        const worldX = state.worldX + mx / (TILE_SIZE * state.zoom);
+        const worldY = state.worldY + my / (TILE_SIZE * state.zoom);
+
+        const snapped = snap(worldX, worldY);
+
+        state.elements.push({
+          type,
+          x: snapped.x,
+          y: snapped.y,
+          width: 1,
+          height: 1,
+          label: "",
+        });
+
+        renderElements();
+        updateURL();
+      });
+
+      /* Download mask overlay  */
+
+      const exportOverlay = document.createElement("div");
+      exportOverlay.style.position = "absolute";
+      exportOverlay.style.inset = "0";
+      exportOverlay.style.pointerEvents = "none";
+      exportOverlay.style.zIndex = "1000";
+      exportOverlay.style.background = "rgba(0,0,0,0.5)";
+
+      const exportRect = document.createElement("div");
+      exportRect.style.position = "absolute";
+      exportRect.style.border = "2px dashed white";
+      exportRect.style.background = "rgba(255,255,255,0.1)";
+      exportRect.style.pointerEvents = "auto";
+      exportRect.style.display = "none";
+
+      const handleBR = document.createElement("div");
+      handleBR.style.position = "absolute";
+      handleBR.style.width = "12px";
+      handleBR.style.height = "12px";
+      handleBR.style.right = "-6px";
+      handleBR.style.bottom = "-6px";
+      handleBR.style.background = "white";
+      handleBR.style.cursor = "nwse-resize";
+
+      const handleTL = document.createElement("div");
+      handleTL.style.position = "absolute";
+      handleTL.style.width = "12px";
+      handleTL.style.height = "12px";
+      handleTL.style.left = "-6px";
+      handleTL.style.top = "-6px";
+      handleTL.style.background = "white";
+      handleTL.style.cursor = "nwse-resize";
+
+      exportRect.appendChild(handleBR);
+      exportRect.appendChild(handleTL);
+      exportOverlay.appendChild(exportRect);
+
+      function enterExportMode() {
+        state.exportMode = true;
+        state.cropRect = null;
+        downloadBtn.textContent = "Confirm Export";
+        map.appendChild(exportOverlay);
+        map.style.cursor = "grab";
+
+        const mapRect = map.getBoundingClientRect();
+
+        const size = Math.min(mapRect.width, mapRect.height) * 0.75;
+
+        const x = (mapRect.width - size) / 2;
+        const y = (mapRect.height - size) / 2;
+
+        state.cropRect = { x, y, w: size, h: size };
+
+        exportRect.style.display = "block";
+        drawCropRect();
       }
-    </style>
-</head>
 
-<body class="tiles-on grid-on map-size-1">
-    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-        <symbol id="check2" viewBox="0 0 16 16">
-            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
-        </symbol>
-        <symbol id="circle-half" viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z" />
-        </symbol>
-        <symbol id="moon-stars-fill" viewBox="0 0 16 16">
-            <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z" />
-            <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z" />
-        </symbol>
-        <symbol id="sun-fill" viewBox="0 0 16 16">
-            <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
-        </symbol>
-    </svg>
-    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-        <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
-            <svg class="bi my-1 theme-icon-active" width="1em" height="1em">
-                <use href="#circle-half"></use>
-            </svg>
-            <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
-            <li>
-                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
-                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
-                        <use href="#sun-fill"></use>
-                    </svg>
-                    Light
-                    <svg class="bi ms-auto d-none" width="1em" height="1em">
-                        <use href="#check2"></use>
-                    </svg>
-                </button>
-            </li>
-            <li>
-                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
-                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
-                        <use href="#moon-stars-fill"></use>
-                    </svg>
-                    Dark
-                    <svg class="bi ms-auto d-none" width="1em" height="1em">
-                        <use href="#check2"></use>
-                    </svg>
-                </button>
-            </li>
-            <li>
-                <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
-                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
-                        <use href="#circle-half"></use>
-                    </svg>
-                    Auto
-                    <svg class="bi ms-auto d-none" width="1em" height="1em">
-                        <use href="#check2"></use>
-                    </svg>
-                </button>
-            </li>
-        </ul>
-    </div>
-    <main>
-        <div class="container py-4">
-            <header class="pb-3 mb-4 border-bottom">
-                <div class="row">
-                    <div class="col col-10">
-                        <div class="d-flex align-items-center text-body-emphasis text-decoration-none">
-                            <img class="logo" src="https://img.pvme.io/images/EPzzJe2xy6.gif">
-                            <span class="fs-4 px-3">PVME Tilemap Maker</span>
-                        </div>
-                    </div>
-                    <div class="col text-end">
-                        <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#pophelp"><i class="bi bi-question-circle"></i></button>
-                        <div id="pophelp" class="modal fade text-start" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        <div class="m-4 flex-col inline-flex text-sm">
-                                            <p>Generator for images used for each forum channel, within the <a target="_new" href="https://discord.gg/6djqFVN">PVME Discord</a> guides.</p>
-                                            <p>For any questions, feel free to ask in the PVME Discord or <a target="_new" href="https://discordapp.com/channels/@me/839236111054143508/">DM me @x222</a>.</p>
-                                            <hr />
-                                            <h4 class="text-md">Links</h4>
-                                            <ul class="list-disc ml-4">
-                                                <li><a target="_new" href="https://github.com/pvme/tilemap-maker">Github</a></li>
-                                                <li><a target="_new" href="https://github.com/pvme/tilemap-maker/issues">Planned updates and bugfixes</a></li>
-                                                <li><a target="_new" href="https://pvme.github.io/">PVME website</a></li>
-                                                <li><a target="_new" href="https://pvme.io/guide-editor/">Guide Editor</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            <div class="p-3 p-lg-4  p-xl-5 mb-5 bg-body-tertiary rounded-3">
-                <div class="row align-items-md-stretch">
-                    <!-- SETTINGS PANE BELOW HERE -->
-                    <div class="col-lg-6">
-                        <div class="h-100 p-4text-bg-dark rounded-3">
-                            <form>
-                                <div class="input-group mb-3">
-                                    <label for="tileX" class="input-group-text">Mej tile X:</label>
-                                    <input id="tileX" class="form-control tileChangeInput" type="number" value="44" placeholder="Start typing">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <label for="tileY" class="input-group-text">Mej tile Y:</label>
-                                    <input id="tileY" class="form-control tileChangeInput" type="number" value="28" placeholder="Start typing">
-                                </div>
-                                <p class="form-text"><a href="https://mejrs.github.io/?m=-1&z=3&p=0&x=3239&y=3209&layer=Grid" target="new">Click to open MejRS map tile finder</a></p>
-                                <p class="form-text"><a href="https://discord.com/channels/534508796639182860/1162558489533612063" target="new">Click to open Editor's repository of maps</a></p>
-                                <hr />
-                                <div class="input-group mb-3">
-                                    <label for="mapSize" class="input-group-text">Map size:</label>
-                                    <select id="mapSize" class="form-select tileChangeInput">
-                                        <option value="1" selected>1x1</option>
-                                        <option value="2">2x2</option>
-                                        <option value="3">3x3</option>
-                                    </select>
-                                </div>
-                                <div class="input-group mb-3">
-                                    <label class="input-group-text">Legend:</label>
-                                    <select id="legend" class="form-select">
-                                        <option value="none">None</option>
-                                        <option value="player" selected>Player</option>
-                                        <option value="cannon">Cannon</option>
-                                        <option value="player-cannon">Player/Cannon</option>
-                                        <option value="player-enemy">Player/Enemy</option>
-                                        <option value="player-enemy-other">Player/Enemy/Other</option>
-                                        <option value="player-cannon-enemy">Player/Cannon/Enemy</option>
-                                        <option value="player-cannon-enemy-other">Player/Cannon/Enemy/Other</option>
-                                    </select>
-                                </div>
-                                <hr />
-                                <div class="mb-1">
-                                    <label for="gridlinesOnOff" class="form-label">Map grid visible?
-                                        <div class="col">
-                                            <div class="d-inline-block me-1 swtich-no">No</div>
-                                            <div class="form-check form-switch d-inline-block">
-                                                <input class="form-check-input" type="checkbox" role="switch" id="gridlinesOnOff" checked>
-                                                <span class="form-check-label">Yes</span>
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div class="mb-1">
-                                    <label for="tilesOnOff" class="form-label">Tile grid visible?
-                                        <div class="col">
-                                            <div class="d-inline-block me-1 swtich-no">No</div>
-                                            <div class="form-check form-switch d-inline-block">
-                                                <input class="form-check-input" type="checkbox" role="switch" id="tilesOnOff" checked>
-                                                <span class="form-check-label">Yes</span>
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                            </form>
-                            <div class="btn-group mb-lg-4" role="group">
-                                <button type="button" class="btn btn-md btn-success" id="create-map" data-bs-toggle="modal" data-bs-target="#previewModal" >
-                                    <span class="toggle"><i class="bi bi-download"></i> Create map</span>
-                                    <span class="toggle visually-hidden">
-                                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                                        <span role="status">Preparing map...</span>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-6">
-                        <div class="h-100 p-4 bg-body-tertiary border rounded-3">
-                            <!-- icon ELEMENTS BELOW HERE -->
-                            <div class="map shadow mb-3" id="map">
-                                <img class="map-background" src="./assets/map-background.png"></img>
-                                <div class="map-squares-wrapper" id="map-squares-wrapper">
-                                    <div class="map-squares" id="map-squares">
-                                    <div class="map-squares-borders" id="map-squares-borders"></div></div>
-                                    <div class="hoverTile hoverTile-player"></div>
-                                    <div class="hoverTile hoverTile-cannon" style="display:none"></div>
-                                    <div class="hoverTile hoverTile-enemy" style="display:none"></div>
-                                    <div class="hoverTile hoverTile-other" style="display:none"></div>
-                                </div>
-                                <img class="legend" src="assets/player.png">
-                            </div>
-                            <!-- MAP POPUP BELOW HERE -->
-                            <div id="previewModal" class="modal fade text-start" tabindex="-1">
-                                <div class="modal-dialog modal-lg modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-success">
-                                            <div class="modal-title">
-                                                <h3><i class="bi bi-check2-circle"></i> Success!</h3>
-                                                <h4>If you're using Chrome or Firefox, right-click on the map to save it</h4>
-                                            </div>
-                                            <button type="button" class="btn-close btn-lg" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="preview-wrapper text-center">
-                                                <div id="preview"></div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <script src="./assets/dist/js/jquery-3.7.1.min.js"></script>
-    <script src="./assets/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./assets/dist/js/html2canvas.min.js"></script>
-    <script src="./assets/dist/js/jquery-ui-1.13.3.js"></script>
-    <script src="./assets/js/index.js"></script>
-</body>
+      function exitExportMode() {
+        state.exportMode = false;
+        state.cropRect = null;
+        state.cropDragging = false;
+        state.cropResizing = false;
+        state.creatingCrop = false;
+        exportRect.style.display = "none";
+        exportOverlay.remove();
+        downloadBtn.textContent = "Download PNG";
+        map.style.cursor = "grab";
+      }
 
+      function drawCropRect() {
+        if (!state.cropRect) return;
+        const { x, y, w, h } = state.cropRect;
+
+        exportRect.style.display = "block";
+        exportRect.style.left = Math.min(x, x + w) + "px";
+        exportRect.style.top = Math.min(y, y + h) + "px";
+        exportRect.style.width = Math.abs(w) + "px";
+        exportRect.style.height = Math.abs(h) + "px";
+      }
+
+      map.addEventListener("pointerdown", (e) => {
+        if (!state.exportMode) return;
+
+        const rect = map.getBoundingClientRect();
+
+        if (e.target === handleBR) {
+          state.cropResizing = true;
+          state.cropHandle = "br";
+          return;
+        }
+
+        if (e.target === handleTL) {
+          state.cropResizing = true;
+          state.cropHandle = "tl";
+          return;
+        }
+
+        if (e.target === exportRect) {
+          state.cropDragging = true;
+          state.dragStartX = e.clientX;
+          state.dragStartY = e.clientY;
+          state.startRect = { ...state.cropRect };
+          return;
+        }
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+      });
+
+      window.addEventListener("pointermove", (e) => {
+        if (!state.exportMode) return;
+
+        const rect = map.getBoundingClientRect();
+
+        if (state.creatingCrop && state.cropRect) {
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          state.cropRect.w = x - state.cropRect.x;
+          state.cropRect.h = y - state.cropRect.y;
+          drawCropRect();
+        }
+
+        if (state.cropDragging) {
+          const dx = e.clientX - state.dragStartX;
+          const dy = e.clientY - state.dragStartY;
+          state.cropRect.x = state.startRect.x + dx;
+          state.cropRect.y = state.startRect.y + dy;
+          drawCropRect();
+        }
+
+        if (state.cropResizing) {
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (state.cropHandle === "br") {
+            state.cropRect.w = x - state.cropRect.x;
+            state.cropRect.h = y - state.cropRect.y;
+          } else {
+            const right = state.cropRect.x + state.cropRect.w;
+            const bottom = state.cropRect.y + state.cropRect.h;
+            state.cropRect.x = x;
+            state.cropRect.y = y;
+            state.cropRect.w = right - x;
+            state.cropRect.h = bottom - y;
+          }
+
+          drawCropRect();
+        }
+      });
+
+      window.addEventListener("pointerup", () => {
+        state.creatingCrop = false;
+        state.cropDragging = false;
+        state.cropResizing = false;
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && state.exportMode) {
+          exitExportMode();
+        }
+      });
+
+      downloadBtn.onclick = async () => {
+        if (!state.exportMode) {
+          enterExportMode();
+          return;
+        }
+
+        if (!state.cropRect) {
+          exitExportMode();
+          return;
+        }
+
+        const dpr = window.devicePixelRatio || 1;
+        exportOverlay.style.display = "none";
+
+        let fullCanvas;
+        try {
+          fullCanvas = await html2canvas(map, {
+            scale: dpr,
+            backgroundColor: null,
+          });
+        } finally {
+          exportOverlay.style.display = "block";
+        }
+
+        const crop = {
+          x: Math.min(state.cropRect.x, state.cropRect.x + state.cropRect.w),
+          y: Math.min(state.cropRect.y, state.cropRect.y + state.cropRect.h),
+          w: Math.abs(state.cropRect.w),
+          h: Math.abs(state.cropRect.h),
+        };
+
+        const legendTypes = [
+          ...new Set(state.elements.map((e) => e.type)),
+        ].filter((type) =>
+          ["player", "cannon", "enemy", "other"].includes(type),
+        );
+
+        const LABELS = {
+          player: "Player position",
+          cannon: "Cannon location",
+          enemy: "Enemy position",
+          other: "Other",
+        };
+
+        const COLORS = {
+          player: "#ff4e51",
+          cannon: "#ffe800",
+          enemy: "#13e1f2",
+          other: "#b94ce6",
+        };
+
+        const maxColumns = Math.min(4, legendTypes.length);
+
+        const availableWidth = crop.w;
+        const itemWidth = 280;
+        const gap = 40;
+        const squareSize = 28;
+        const fontSize = 28;
+        const rowHeight = 50;
+
+        let columns = Math.floor((availableWidth + gap) / (itemWidth + gap));
+        columns = Math.max(1, Math.min(columns, maxColumns));
+
+        const rows = Math.ceil(legendTypes.length / columns);
+
+        const legendHeight = legendTypes.length ? rows * rowHeight + 40 : 0;
+
+        const totalWidth = crop.w + FRAME_WIDTH * 2;
+        const totalHeight = crop.h + legendHeight + FRAME_WIDTH * 3;
+
+        const exportCanvas = document.createElement("canvas");
+        exportCanvas.width = totalWidth * dpr;
+        exportCanvas.height = totalHeight * dpr;
+
+        const ctx = exportCanvas.getContext("2d");
+        ctx.scale(dpr, dpr);
+
+        const grad = ctx.createLinearGradient(
+          0,
+          0,
+          exportCanvas.width,
+          exportCanvas.height,
+        );
+        grad.addColorStop(0, "#111827");
+        grad.addColorStop(1, "#1e293b");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, totalWidth, totalHeight);
+
+        ctx.drawImage(
+          fullCanvas,
+          crop.x * dpr,
+          crop.y * dpr,
+          crop.w * dpr,
+          crop.h * dpr,
+          FRAME_WIDTH,
+          FRAME_WIDTH,
+          crop.w,
+          crop.h,
+        );
+
+        if (legendTypes.length > 0) {
+          ctx.fillStyle = "#0b1a22";
+          ctx.fillRect(
+            FRAME_WIDTH,
+            crop.h + FRAME_WIDTH * 2,
+            crop.w,
+            legendHeight,
+          );
+
+          ctx.font = `bold ${fontSize}px Inter, ui-sans-serif, system-ui`;
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = "#e5e7eb";
+
+          const startX =
+            FRAME_WIDTH +
+            (crop.w - (columns * itemWidth + (columns - 1) * gap)) / 2;
+
+          const legendTop = crop.h + FRAME_WIDTH * 2;
+          const legendContentHeight = rows * rowHeight;
+
+          const startY =
+            legendTop +
+            (legendHeight - legendContentHeight) / 2 +
+            rowHeight / 2;
+
+          legendTypes.forEach((type, index) => {
+            const col = index % columns;
+            const row = Math.floor(index / columns);
+
+            const x = startX + col * (itemWidth + gap);
+            const y = startY + row * rowHeight;
+
+            ctx.fillStyle = COLORS[type];
+            ctx.fillRect(x, y - squareSize / 2, squareSize, squareSize);
+
+            ctx.fillStyle = "#e5e7eb";
+            ctx.fillText(LABELS[type], x + squareSize + 20, y);
+          });
+        }
+
+        const link = document.createElement("a");
+        link.download = "tilemap.png";
+        link.href = exportCanvas.toDataURL();
+        link.click();
+
+        exitExportMode();
+      };
+
+      /* Init */
+      updateTransform();
+      syncTiles();
+      drawGrid();
+      renderElements();
+      renderToolbar();
+      updateURL();
+    </script>
+  </body>
 </html>

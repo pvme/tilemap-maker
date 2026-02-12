@@ -1,94 +1,89 @@
-.logo {
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
+#map {
+  flex: 1 1 auto;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  background: black;
 }
 
-.form-label,
-.form-check-input {
-    font-weight: bold;
-    cursor: pointer;
+#map.dragging {
+  cursor: grabbing;
 }
 
-.form-check-label,
-.swtich-no {
-    font-weight: normal;
-}
-
-.map {
-    width: 542px;
-    height: 610px;
-    padding: 15px;
-    position: relative;
-    overflow: clip;
-    font-size: 0;
-}
-
-.map-background {
-    position: absolute;
-    z-index: 0;
-    left: 0;
-    top: 0;
-    width: 100%;
-    font-size: 0;
-}
-
-.legend-off .map {
-    height: 541px;
-}
-
-.map-squares-wrapper {
-    position: relative;
-    overflow: clip;
-}
-
-.map-squares {
-    position: relative;
-    width: 100%;
-}
-
-.legend {
-    pointer-events: none;
-    position: absolute;
-    z-index: 10;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-}
-
-
-.map-squares-borders {
-    pointer-events: none;
-    position: absolute;
-    z-index: 8;
-    width: 100%;
-    font-size: 0;
-}
-.map-square-border {
-    display: inline-block;
-}
-
-.grid-on .map-square-border {
-    outline: 1px solid white;
-}
-
-.tiles-on .map-square-border {
-    background: url('tile-grid.png');
-    background-size: 400% 
-}
-
-/* 15x15 tiles per grid */
-.hoverTile {
-  position:absolute;
-  z-index: 7;
+#mapInner {
+  position: absolute;
   top: 0;
   left: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
 }
-.hoverTile-player { background-color: rgb(255, 78, 81) }
-.hoverTile-cannon { background-color: rgb(255, 232, 0) }
-.hoverTile-enemy { background-color: rgb(19, 225, 242) }
-.hoverTile-other { background-color: rgb(211, 67, 255) }
 
-.map-size-1 .hoverTile { width: 33px; height: 33px; }
-.map-size-2 .hoverTile { width: 17px; height: 17px; }
-.map-size-3 .hoverTile { width: 8px; height: 8px; }
+.tile {
+  position: absolute;
+  width: 512px;
+  height: 512px;
+  pointer-events: none;
+}
+
+.tile img {
+  width: 512px;
+  height: 512px;
+  display: block;
+  image-rendering: pixelated;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.map-element {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  color: black;
+  box-sizing: border-box;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.map-element.selected {
+  outline: 3px solid white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.element-toolbar {
+  position: absolute;
+  background: #223041;
+  border-radius: 6px;
+  padding: 6px;
+  display: none;
+  gap: 6px;
+  align-items: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  pointer-events: auto;
+}
+
+.element-toolbar input {
+  width: 40px;
+}
+
+.element-toolbar button {
+  background: #ff4e51;
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
