@@ -369,7 +369,7 @@
       map.appendChild(toolbar);
 
       function runeUrl(x, y) {
-        return `https://runeapps.org/s3/map4/live/topdown-0/5/${x}-${y}.webp`;
+        return `https://tilemap-proxy-155908141849.europe-west1.run.app?x=${x}&y=${y}`;
       }
 
       function updateTransform() {
@@ -921,8 +921,7 @@
           fullCanvas = await html2canvas(map, {
             scale: dpr,
             backgroundColor: null,
-            useCORS: false,
-            allowTaint: true,
+            useCORS: true,
           });
         } finally {
           exportOverlay.style.display = "block";
