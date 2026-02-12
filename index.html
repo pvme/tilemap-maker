@@ -435,7 +435,6 @@
         wrapper.style.top = y * TILE_SIZE + "px";
 
         const img = document.createElement("img");
-        img.crossOrigin = "anonymous";
         img.src = runeUrl(x, y);
         img.draggable = false;
         img.onerror = () => (img.style.display = "none");
