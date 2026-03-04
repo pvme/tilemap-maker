@@ -317,9 +317,10 @@
     </div>
 
     <script>
+      const WORLD_HEIGHT = 200;
       const TILE_SIZE = 512;
       const SUB_TILES = 16;
-      const MIN_ZOOM = 0.4;
+      const MIN_ZOOM = 0.2;
       const MAX_ZOOM = 3;
       const ZOOM_PER_SCROLL = 0.001;
       const BUFFER = 1;
@@ -376,8 +377,14 @@
         inner.style.transform = `translate(${-state.worldX * TILE_SIZE * state.zoom}px,
                      ${-state.worldY * TILE_SIZE * state.zoom}px)
            scale(${state.zoom})`;
-        xInput.value = state.worldX.toFixed(6);
-        yInput.value = state.worldY.toFixed(6);
+        const viewTilesX = map.clientWidth / (TILE_SIZE * state.zoom);
+        const viewTilesY = map.clientHeight / (TILE_SIZE * state.zoom);
+
+        const centerX = state.worldX + viewTilesX / 2;
+        const centerY = state.worldY + viewTilesY / 2;
+
+        xInput.value = (centerX / 4).toFixed(2);
+        yInput.value = (WORLD_HEIGHT - centerY / 4).toFixed(2);
         drawGrid();
         positionToolbar();
       }
@@ -615,14 +622,17 @@
       yInput.value = state.worldY;
 
       xInput.onchange = () => {
-        state.worldX = parseFloat(xInput.value) || 0;
+        const viewTilesX = map.clientWidth / (TILE_SIZE * state.zoom);
+        state.worldX = (parseFloat(xInput.value) || 0) * 4 - viewTilesX / 2;
         updateTransform();
         syncTiles();
         updateURL();
       };
 
       yInput.onchange = () => {
-        state.worldY = parseFloat(yInput.value) || 0;
+        const viewTilesY = map.clientHeight / (TILE_SIZE * state.zoom);
+        const input = parseFloat(yInput.value) || 0;
+        state.worldY = (WORLD_HEIGHT - input) * 4 - viewTilesY / 2;
         updateTransform();
         syncTiles();
         updateURL();
