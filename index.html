@@ -363,16 +363,6 @@
         creatingCrop: false,
       };
 
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("x")) state.worldX = parseFloat(params.get("x"));
-      if (params.has("y")) state.worldY = parseFloat(params.get("y"));
-      if (params.has("z")) state.zoom = parseFloat(params.get("z"));
-      if (params.has("e")) {
-        try {
-          state.elements = JSON.parse(atob(params.get("e")));
-        } catch {}
-      }
-
       const map = document.getElementById("map");
       const inner = document.getElementById("mapInner");
       const xInput = document.getElementById("xInput");
@@ -380,6 +370,25 @@
       const gridToggle = document.getElementById("gridToggle");
       const downloadBtn = document.getElementById("downloadBtn");
       const presetSelect = document.getElementById("presetSelect");
+
+      const params = new URLSearchParams(window.location.search);
+
+      let pendingURLCoords = null;
+
+      if (params.has("z")) state.zoom = parseFloat(params.get("z"));
+
+      if (params.has("x") && params.has("y")) {
+        pendingURLCoords = {
+          x: parseFloat(params.get("x")),
+          y: parseFloat(params.get("y")),
+        };
+      }
+
+      if (params.has("e")) {
+        try {
+          state.elements = JSON.parse(atob(params.get("e")));
+        } catch {}
+      }
 
       async function loadPresets() {
         try {
@@ -402,18 +411,55 @@
             presetSelect.appendChild(group);
           }
 
-          // initialise AFTER options exist
-          new TomSelect("#presetSelect", {
+          const ts = new TomSelect("#presetSelect", {
             placeholder: "Jump to location...",
             maxOptions: 200,
             create: false,
           });
+
+          if (!params.has("x") && !params.has("y")) {
+            const first = Object.keys(ts.options)[0];
+
+            if (first) {
+              ts.setValue(first, true);
+
+              const preset = JSON.parse(first);
+
+              const viewTilesX = map.clientWidth / (TILE_SIZE * state.zoom);
+              const viewTilesY = map.clientHeight / (TILE_SIZE * state.zoom);
+
+              state.worldX = preset.x * 4 - viewTilesX / 2;
+              state.worldY = (WORLD_HEIGHT - preset.y) * 4 - viewTilesY / 2;
+
+              updateTransform();
+              syncTiles();
+              updateURL();
+            }
+          }
+
+          if (pendingURLCoords) {
+            const options = ts.options;
+            for (const value in options) {
+              const preset = JSON.parse(value);
+              if (
+                Math.abs(preset.x - pendingURLCoords.x) < 0.01 &&
+                Math.abs(preset.y - pendingURLCoords.y) < 0.01
+              ) {
+                ts.setValue(value, true);
+                break;
+              }
+            }
+          }
         } catch (err) {
           console.error("Failed loading locations.json", err);
         }
       }
 
       const tileCache = new Map();
+
+      let panQueued = false;
+      let panDX = 0;
+      let panDY = 0;
 
       const gridLayer = document.createElement("canvas");
       map.appendChild(gridLayer);
@@ -444,10 +490,12 @@
 
       function updateURL() {
         const url = new URL(window.location);
-        url.searchParams.set("x", state.worldX.toFixed(6));
-        url.searchParams.set("y", state.worldY.toFixed(6));
-        url.searchParams.set("z", state.zoom.toFixed(6));
+
+        url.searchParams.set("x", Number(xInput.value).toFixed(2));
+        url.searchParams.set("y", Number(yInput.value).toFixed(2));
+        url.searchParams.set("z", state.zoom.toFixed(4));
         url.searchParams.set("e", btoa(JSON.stringify(state.elements)));
+
         history.replaceState(null, "", url);
       }
 
@@ -470,7 +518,7 @@
 
         for (let y = bounds.startY; y <= bounds.endY; y++) {
           for (let x = bounds.startX; x <= bounds.endX; x++) {
-            const key = x + ":" + y;
+            const key = `${x}:${y}`;
             needed.add(key);
             if (!tileCache.has(key)) {
               const tile = createTile(x, y);
@@ -526,8 +574,8 @@
         const worldStep = TILE_SIZE / SUB_TILES;
         const screenStep = worldStep * state.zoom;
 
-const offsetX = -((state.worldX * TILE_SIZE) % worldStep) * state.zoom;
-const offsetY = -((state.worldY * TILE_SIZE) % worldStep) * state.zoom;
+        const offsetX = -((state.worldX * TILE_SIZE) % worldStep) * state.zoom;
+        const offsetY = -((state.worldY * TILE_SIZE) % worldStep) * state.zoom;
 
         ctx.strokeStyle = "rgba(0,0,0,0.3)";
         ctx.lineWidth = 1;
@@ -564,7 +612,7 @@ const offsetY = -((state.worldY * TILE_SIZE) % worldStep) * state.zoom;
       }
 
       function renderElements() {
-        document.querySelectorAll(".map-element").forEach((el) => el.remove());
+        inner.querySelectorAll(".map-element").forEach((el) => el.remove());
         const cellSize = TILE_SIZE / SUB_TILES;
 
         state.elements.forEach((el, i) => {
@@ -710,16 +758,6 @@ const offsetY = -((state.worldY * TILE_SIZE) % worldStep) * state.zoom;
       gridToggle.checked = state.showGrid;
       gridToggle.onchange = () => {
         state.showGrid = gridToggle.checked;
-        drawGrid();
-      };
-
-      downloadBtn.onclick = () => {
-        html2canvas(map, { backgroundColor: null }).then((canvas) => {
-          const link = document.createElement("a");
-          link.download = "tilemap.png";
-          link.href = canvas.toDataURL();
-          link.click();
-        });
       };
 
       /* Pan + Zoom */
@@ -740,13 +778,22 @@ const offsetY = -((state.worldY * TILE_SIZE) % worldStep) * state.zoom;
 
       window.addEventListener("pointermove", (e) => {
         if (!state.dragging) return;
-        const dx = (e.clientX - state.startX) / (TILE_SIZE * state.zoom);
-        const dy = (e.clientY - state.startY) / (TILE_SIZE * state.zoom);
-        state.worldX = state.originX - dx;
-        state.worldY = state.originY - dy;
-        updateTransform();
-        syncTiles();
-        updateURL();
+        panDX = (e.clientX - state.startX) / (TILE_SIZE * state.zoom);
+        panDY = (e.clientY - state.startY) / (TILE_SIZE * state.zoom);
+
+        if (panQueued) return;
+        panQueued = true;
+
+        requestAnimationFrame(() => {
+          panQueued = false;
+
+          state.worldX = state.originX - panDX;
+          state.worldY = state.originY - panDY;
+
+          updateTransform();
+          syncTiles();
+          updateURL();
+        });
       });
 
       window.addEventListener("pointerup", () => {
@@ -779,6 +826,7 @@ const offsetY = -((state.worldY * TILE_SIZE) % worldStep) * state.zoom;
 
           updateTransform();
           syncTiles();
+          drawGrid();
           updateURL();
         },
         { passive: false },
@@ -1131,6 +1179,17 @@ const offsetY = -((state.worldY * TILE_SIZE) % worldStep) * state.zoom;
       };
 
       /* Init */
+      if (pendingURLCoords) {
+        const viewTilesX = map.clientWidth / (TILE_SIZE * state.zoom);
+        const viewTilesY = map.clientHeight / (TILE_SIZE * state.zoom);
+
+        const centerX = pendingURLCoords.x * 4;
+        const centerY = (WORLD_HEIGHT - pendingURLCoords.y) * 4;
+
+        state.worldX = centerX - viewTilesX / 2;
+        state.worldY = centerY - viewTilesY / 2;
+      }
+
       updateTransform();
       syncTiles();
       drawGrid();
