@@ -524,14 +524,10 @@
         ctx.clearRect(0, 0, w, h);
 
         const worldStep = TILE_SIZE / SUB_TILES;
-        const screenStep = Math.round(worldStep * state.zoom);
+        const screenStep = worldStep * state.zoom;
 
-        const offsetX = Math.round(
-          -((state.worldX * TILE_SIZE) % worldStep) * state.zoom,
-        );
-        const offsetY = Math.round(
-          -((state.worldY * TILE_SIZE) % worldStep) * state.zoom,
-        );
+const offsetX = -((state.worldX * TILE_SIZE) % worldStep) * state.zoom;
+const offsetY = -((state.worldY * TILE_SIZE) % worldStep) * state.zoom;
 
         ctx.strokeStyle = "rgba(0,0,0,0.3)";
         ctx.lineWidth = 1;
