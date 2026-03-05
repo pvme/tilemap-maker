@@ -87,3 +87,184 @@ canvas {
   cursor: pointer;
   border-radius: 4px;
 }
+
+/* ======================================
+   TOMSELECT — PVME DARK UI THEME
+   ====================================== */
+
+.ts-wrapper {
+  font-family: inherit;
+}
+
+/* =========================
+   MAIN CONTROL
+   ========================= */
+
+.ts-wrapper.single .ts-control {
+  display: flex;
+  align-items: center;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 8px 10px;
+  min-height: 38px;
+  box-shadow: none;
+  transition:
+    border 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* focus */
+.ts-wrapper.focus .ts-control {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35);
+  background: #0f172a !important;
+}
+
+/* selected text */
+.ts-control .item {
+  color: #e2e8f0;
+}
+
+/* input */
+.ts-control input {
+  background: transparent !important;
+  color: #e2e8f0 !important;
+}
+
+/* placeholder */
+.ts-control input::placeholder {
+  color: #64748b;
+}
+
+/* =========================
+   SEARCH ICON
+   ========================= */
+
+.ts-wrapper.single .ts-control::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23f8fafc' viewBox='0 0 20 20'%3E%3Cpath d='M8.5 2a6.5 6.5 0 104.03 11.64l3.41 3.41a1 1 0 001.41-1.41l-3.41-3.41A6.5 6.5 0 008.5 2zm0 2a4.5 4.5 0 110 9 4.5 4.5 0 010-9z'/%3E%3C/svg%3E");
+}
+
+/* =========================
+   DROPDOWN ARROW
+   ========================= */
+
+.ts-wrapper.single .ts-control::after {
+  border-color: #94a3b8 transparent transparent transparent;
+  transition: transform 0.2s ease;
+}
+
+/* rotate arrow when open */
+.ts-wrapper.dropdown-active .ts-control::after {
+  transform: rotate(180deg);
+}
+
+/* =========================
+   DROPDOWN PANEL
+   ========================= */
+
+.ts-dropdown {
+  background: #0f172a !important;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  margin-top: 4px;
+  overflow: hidden;
+  animation: pvmeDropdown 0.15s ease;
+}
+
+/* dropdown animation */
+@keyframes pvmeDropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* dropdown search */
+.ts-dropdown input {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-bottom: 1px solid #334155;
+  padding: 8px 10px;
+}
+
+/* =========================
+   OPTIONS
+   ========================= */
+
+.ts-wrapper .ts-dropdown .option {
+  padding: 8px 10px;
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+/* hover */
+.ts-wrapper .ts-dropdown .option:hover {
+  background: #1e293b !important;
+}
+
+/* keyboard active */
+.ts-wrapper .ts-dropdown .active,
+.ts-wrapper .ts-dropdown .option.active,
+.ts-wrapper .ts-dropdown .option.selected {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* =========================
+   OPTGROUP HEADERS
+   ========================= */
+
+.ts-dropdown .optgroup-header {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  padding: 8px 10px 4px;
+  background: #0f172a;
+}
+
+/* =========================
+   REMOVE DEFAULT STYLES
+   ========================= */
+
+.ts-control,
+.ts-control input,
+.ts-dropdown,
+.ts-dropdown input {
+  box-shadow: none !important;
+}
+
+/* =========================
+   SCROLLBAR
+   ========================= */
+
+.ts-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ts-dropdown::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+.ts-dropdown::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.ts-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}

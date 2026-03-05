@@ -6,6 +6,11 @@
     <title>PVME Tilemap</title>
 
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
     <link href="./assets/index.css" rel="stylesheet" />
   </head>
 
@@ -89,6 +94,21 @@
         >
           Starting Position
         </h3>
+
+        <select
+          id="presetSelect"
+          style="
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 8px;
+            color: white;
+            font-size: 14px;
+            width: 100%;
+          "
+        >
+          <option value="">Jump to location...</option>
+        </select>
 
         <div style="display: flex; gap: 8px">
           <input
@@ -320,7 +340,7 @@
       const WORLD_HEIGHT = 200;
       const TILE_SIZE = 512;
       const SUB_TILES = 16;
-      const MIN_ZOOM = 0.2;
+      const MIN_ZOOM = 0.5;
       const MAX_ZOOM = 3;
       const ZOOM_PER_SCROLL = 0.001;
       const BUFFER = 1;
@@ -359,6 +379,39 @@
       const yInput = document.getElementById("yInput");
       const gridToggle = document.getElementById("gridToggle");
       const downloadBtn = document.getElementById("downloadBtn");
+      const presetSelect = document.getElementById("presetSelect");
+
+      async function loadPresets() {
+        try {
+          const res = await fetch("./assets/locations.json");
+          const data = await res.json();
+
+          for (const category of ["Bosses", "Slayer"]) {
+            if (!data[category]) continue;
+
+            const group = document.createElement("optgroup");
+            group.label = category;
+
+            for (const preset of data[category]) {
+              const option = document.createElement("option");
+              option.value = JSON.stringify(preset);
+              option.textContent = preset.name;
+              group.appendChild(option);
+            }
+
+            presetSelect.appendChild(group);
+          }
+
+          // initialise AFTER options exist
+          new TomSelect("#presetSelect", {
+            placeholder: "Jump to location...",
+            maxOptions: 200,
+            create: false,
+          });
+        } catch (err) {
+          console.error("Failed loading locations.json", err);
+        }
+      }
 
       const tileCache = new Map();
 
@@ -633,6 +686,26 @@
         const viewTilesY = map.clientHeight / (TILE_SIZE * state.zoom);
         const input = parseFloat(yInput.value) || 0;
         state.worldY = (WORLD_HEIGHT - input) * 4 - viewTilesY / 2;
+        updateTransform();
+        syncTiles();
+        updateURL();
+      };
+
+      presetSelect.onchange = () => {
+        if (!presetSelect.value) return;
+
+        const preset = JSON.parse(presetSelect.value);
+
+        if (preset.zoom !== undefined) {
+          state.zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, preset.zoom));
+        }
+
+        const viewTilesX = map.clientWidth / (TILE_SIZE * state.zoom);
+        const viewTilesY = map.clientHeight / (TILE_SIZE * state.zoom);
+
+        state.worldX = preset.x * 4 - viewTilesX / 2;
+        state.worldY = (WORLD_HEIGHT - preset.y) * 4 - viewTilesY / 2;
+
         updateTransform();
         syncTiles();
         updateURL();
@@ -1067,6 +1140,7 @@
       drawGrid();
       renderElements();
       renderToolbar();
+      loadPresets();
       updateURL();
     </script>
   </body>
