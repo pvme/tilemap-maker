@@ -53,7 +53,9 @@
     { "name": "ED3 - Ambassador", "x": 84.97, "y": 143.75, "zoom": 0.7 },
     { "name": "Arraxor / Arraxi (Rax)", "x": 70.59, "y": 98.13, "zoom": 0.7 },
     { "name": "Giant Mole", "x": 27.70, "y": 81.93, "zoom": 0.7 },
-    { "name": "Queen Black Dragon (QBD)", "x": 22.77, "y": 99.74, "zoom": 0.7 }
+    { "name": "Queen Black Dragon (QBD)", "x": 22.77, "y": 99.74, "zoom": 0.7 },
+    { "name": "Silverquill", "x": 53.49, "y": 124.01, "zoom": 0.7 },
+    { "name": "Ivar", "x": 57.24, "y": 25.96, "zoom": 0.7 }
   ],
   "Slayer": [
     { "name": "POSD (Player Owned Slayer Dungeon)", "x": 29.85, "y": 104.75, "zoom": 0.7 },
