@@ -758,6 +758,7 @@
       gridToggle.checked = state.showGrid;
       gridToggle.onchange = () => {
         state.showGrid = gridToggle.checked;
+        drawGrid();
       };
 
       /* Pan + Zoom */

@@ -27,8 +27,8 @@
 }
 
 .tile img {
-  width: 512px;
-  height: 512px;
+  width: 513px;
+  height: 513px;
   display: block;
   image-rendering: pixelated;
   pointer-events: none;
